@@ -1,1 +1,43 @@
-EE
+<?xml version="1.0"?>
+<tryton>
+    <data>
+        
+        <record model="ir.ui.view" id="employee_mileage_form">
+            <field name="name">employee_mileage_form</field>
+            <field name="model">employee_mileage</field>
+            <field name="type">form</field>
+        </record>
+
+        <record model="ir.ui.view" id="employee_mileage_list">
+            <field name="name">employee_mileage_list</field>
+            <field name="model">employee_mileage</field>
+            <field name="type">tree</field>
+        </record>
+
+       <!-- <record model="ir.action.act_window" id="act_agenda">
+            <field name="name">Agenda</field> --> <!-- Nombre que verá el usuario en pantalla -->
+          <!--   <field name="res_model">agenda</field>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_agenda_form">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="view_agenda_form"/>
+            <field name="act_window" ref="act_agenda" />
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_agenda_list">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="view_agenda_list"/>
+            <field name="act_window" ref="act_agenda" />
+        </record>
+
+        <record model="ir.model.button" id="update_button">
+            <field name="name">update</field>
+            <field name='string'>Update!</field>
+            <field name="model" search="[('model', '=', 'agenda')]"/>
+        </record>
+
+        <menuitem id="menu_agenda" sequence="1" icon="tryton-list" action="act_agenda" />
+    -->
+    </data>
+</tryton>
