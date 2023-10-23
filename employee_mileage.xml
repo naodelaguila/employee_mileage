@@ -14,6 +14,7 @@
             <field name="type">tree</field>
         </record>
 
+        <!-- FALTA POR HACER EL MENU -->
        <!-- <record model="ir.action.act_window" id="act_agenda">
             <field name="name">Agenda</field> --> <!-- Nombre que verá el usuario en pantalla -->
           <!--   <field name="res_model">agenda</field>

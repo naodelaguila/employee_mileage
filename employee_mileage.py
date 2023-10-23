@@ -3,7 +3,7 @@ from trytond.pool import Pool
 
 class EmployeeMileage(ModelSQL, ModelView):
     "Employee Mileage"
-    __name__ = 'employee_mileage'
+    __name__ = 'employee.mileage'
     
     employee = fields.Many2One('company.employee', 'Employee', required=True)
     resource = fields.Reference('Resource', selection='get_resource')
