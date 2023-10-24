@@ -14,25 +14,24 @@
             <field name="type">tree</field>
         </record>
 
-        <!-- FALTA POR HACER EL MENU -->
-       <!-- <record model="ir.action.act_window" id="act_agenda">
-            <field name="name">Agenda</field> --> <!-- Nombre que verá el usuario en pantalla -->
-          <!--   <field name="res_model">agenda</field>
+       <record model="ir.action.act_window" id="act_employee_mileage">
+            <field name="name">Employee mileage</field>   <!-- Nombre que verá el usuario en pantalla -->
+            <field name="res_model">employee_mileage</field>
         </record>
 
-        <record model="ir.action.act_window.view" id="act_agenda_form">
+        <record model="ir.action.act_window.view" id="act_employee_mileage_form">
             <field name="sequence" eval="10"/>
-            <field name="view" ref="view_agenda_form"/>
-            <field name="act_window" ref="act_agenda" />
+            <field name="view" ref="employee_mileage_form"/>
+            <field name="act_window" ref="act_employee_mileage" />
         </record>
 
-        <record model="ir.action.act_window.view" id="act_agenda_list">
+        <record model="ir.action.act_window.view" id="act_employee_mileage_list">
             <field name="sequence" eval="20"/>
-            <field name="view" ref="view_agenda_list"/>
-            <field name="act_window" ref="act_agenda" />
+            <field name="view" ref="employee_mileage_list"/>
+            <field name="act_window" ref="act_employee_mileage" />
         </record>
 
-        <menuitem id="menu_agenda" sequence="1" icon="tryton-list" action="act_agenda" />
-    -->
+        <menuitem id="menu_mileage" parent="company.menu_company" sequence="1" icon="tryton-list" action="act_employee_mileage" />
+    
     </data>
 </tryton>
