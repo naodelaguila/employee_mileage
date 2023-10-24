@@ -20,9 +20,11 @@ class EmployeeMileage(ModelSQL, ModelView):
     
     @classmethod
     def get_resource(cls):
-        Model = Pool().get('employee.mileage')  # Posible error
+        Mileage = Pool().get('employee.mileage')  # Posible error
         models = cls._get_resource()
-        models = Model.search([
-            ('model', 'in', models),
-        ])
-        return [('', '')] + [(m.model, m.name) for m in models]
+        models = Mileage.search([])
+        res = [('', '')]
+        for m in models:
+            print(m)
+            res.append(m.model, m.name)
+        return res
