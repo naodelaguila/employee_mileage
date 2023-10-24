@@ -15,7 +15,7 @@
         </record>
 
        <record model="ir.action.act_window" id="act_employee_mileage">
-            <field name="name">Employee mileage</field>   <!-- Nombre que verá el usuario en pantalla -->
+            <field name="name">Mileage</field>   <!-- Nombre que verá el usuario en pantalla -->
             <field name="res_model">employee.mileage</field>
         </record>
 

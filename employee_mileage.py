@@ -8,7 +8,7 @@ class EmployeeMileage(ModelSQL, ModelView):
     employee = fields.Many2One('company.employee', 'Employee', required=True)
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
-    distance = fields.Float('Distance')
+    distance = fields.Float('Distance', required=True)
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
     
@@ -20,11 +20,13 @@ class EmployeeMileage(ModelSQL, ModelView):
     
     @classmethod
     def get_resource(cls):
-        Mileage = Pool().get('employee.mileage')  # Posible error
+        Model = Pool().get('ir.model')  # Posible error
         models = cls._get_resource()
-        models = Mileage.search([])
+        models = Model.search([('model', 'in', models)])
         res = [('', '')]
         for m in models:
             print(m)
-            res.append(m.model, m.name)
+            res.append((m.model, m.name))
         return res
+    
+    
