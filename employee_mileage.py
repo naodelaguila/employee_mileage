@@ -8,8 +8,8 @@ class EmployeeMileage(ModelSQL, ModelView):
     employee = fields.Many2One('company.employee', 'Employee', required=True)
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
-    distance = fields.float('Distance', required=True)
-    date = fields.date('Date', required=True)
+    distance = fields.Float('Distance')
+    date = fields.Date('Date', required=True)
     description = fields.Char('Description')
     
     # Resource functions -> Puede resultar en catástrofe

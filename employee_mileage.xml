@@ -32,12 +32,6 @@
             <field name="act_window" ref="act_agenda" />
         </record>
 
-        <record model="ir.model.button" id="update_button">
-            <field name="name">update</field>
-            <field name='string'>Update!</field>
-            <field name="model" search="[('model', '=', 'agenda')]"/>
-        </record>
-
         <menuitem id="menu_agenda" sequence="1" icon="tryton-list" action="act_agenda" />
     -->
     </data>

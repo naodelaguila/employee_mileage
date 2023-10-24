@@ -4,5 +4,5 @@ from . import employee_mileage
 def register():
     Pool.register(
         employee_mileage.EmployeeMileage,
-        module='employee_mileage', type='model'
+        module='employee_mileage', type_='model'
     )
