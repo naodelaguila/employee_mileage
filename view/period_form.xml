@@ -1,0 +1,8 @@
+<form >
+    <label name="name"/>
+    <field name="name"/>
+    <label name="employee"/>
+    <field name="employee"/>
+    <label name="mileage"/>
+    <field name="mileage"/>
+</form>

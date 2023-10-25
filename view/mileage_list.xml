@@ -6,4 +6,5 @@
     <field name="price_per_km"/>
     <field name="date"/>
     <field name="description"/>
+    <field name="state"/>
  </tree>

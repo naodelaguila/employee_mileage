@@ -2,6 +2,7 @@
 <tryton>
     <data>
         
+        <!-- VIEW FOR MILEAGE -->
         <record model="ir.ui.view" id="mileage_form">
             <field name="name">mileage_form</field>
             <field name="model">employee.mileage</field>
@@ -31,7 +32,39 @@
             <field name="act_window" ref="act_mileage" />
         </record>
 
-        <menuitem id="menu_mileage" parent="company.menu_company" sequence="1" icon="tryton-list" action="act_mileage" />
+        <menuitem id="menu_mileage" parent="company.menu_company" sequence="99" icon="tryton-list" action="act_mileage" />
     
+        <!-- VIEW FOR PERIOD -->
+        <record model="ir.ui.view" id="period_form">
+            <field name="name">period_form</field>
+            <field name="model">employee.mileage.period</field>
+            <field name="type">form</field>
+        </record>
+
+        <record model="ir.ui.view" id="period_list">
+            <field name="name">period_list</field>
+            <field name="model">employee.mileage.period</field>
+            <field name="type">tree</field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_period">
+            <field name="name">Period</field>   <!-- Nombre que verá el usuario en pantalla -->
+            <field name="res_model">employee.mileage.period</field>
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_period_form">
+            <field name="sequence" eval="20"/>
+            <field name="view" ref="period_form"/>
+            <field name="act_window" ref="act_period" />
+        </record>
+
+        <record model="ir.action.act_window.view" id="act_period_list">
+            <field name="sequence" eval="10"/>
+            <field name="view" ref="period_list"/>
+            <field name="act_window" ref="act_period" />
+        </record>
+
+        <menuitem id="menu_period" parent="employee_mileage.menu_mileage" sequence="1" icon="tryton-list" action="act_period" />
+
     </data>
 </tryton>

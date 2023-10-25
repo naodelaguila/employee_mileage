@@ -1,0 +1,5 @@
+<tree>
+    <field name="name"/>
+    <field name="employee"/>
+    <field name="mileage"/>
+ </tree>

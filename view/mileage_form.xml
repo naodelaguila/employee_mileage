@@ -13,4 +13,6 @@
     <field name="date"/>
     <label name="description"/>
     <field name="description"/>
+    <label name="state"/>
+    <field name="state"/>
 </form>
