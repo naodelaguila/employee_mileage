@@ -3,6 +3,7 @@
     <field name="resource"/>
     <field name="address"/>
     <field name="distance"/>
+    <field name="price_per_km"/>
     <field name="date"/>
     <field name="description"/>
  </tree>

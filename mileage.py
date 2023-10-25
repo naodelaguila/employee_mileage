@@ -9,6 +9,7 @@ class Mileage(ModelSQL, ModelView):
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
     distance = fields.Float('Distance', required=True)
+    price_per_km = fields.Numeric('Price per km')
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
     
