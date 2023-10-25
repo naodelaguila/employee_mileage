@@ -1,8 +1,8 @@
 from trytond.pool import Pool
-from . import employee_mileage
+from . import mileage
 
 def register():
     Pool.register(
-        employee_mileage.EmployeeMileage,
+        mileage.Mileage,
         module='employee_mileage', type_='model'
     )
