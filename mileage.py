@@ -1,4 +1,4 @@
-from trytond.model import ModelSQL, ModelView, fields
+from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.pool import Pool
 
 class Mileage(ModelSQL, ModelView):
@@ -33,6 +33,62 @@ class Mileage(ModelSQL, ModelView):
             print(m)
             res.append((m.model, m.name))
         return res
+    
+    # Workflow para el state
+    @classmethod
+    def __setup__(cls):
+        cls._transitions |= set((
+            ('draft', 'confirmed'),
+            ('confirmed', 'posted'),
+            ('draft', 'cancelled'),
+            ('confirmed', 'cancelled')
+        ))
+        cls._buttons.update({
+            'draft': {
+                'invisible': (),
+                'icon': (),
+                'depends': ['state']
+            },
+            'confirm': {
+                'invisible': (),
+                'icon': (),
+                'depends': ['state']
+            },
+            'posted': {
+                'invisible': (),
+                'icon': (),
+                'depends': ['state']
+            },
+            'cancel': {
+                'invisible': (),
+                'icon': (),
+                'depends': ['state']
+            },
+        })
+        
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('draft')
+    def draft(cls, resources):
+        pass
+    
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('confirm')
+    def draft(cls, resources):
+        pass
+    
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('post')
+    def draft(cls, resources):
+        pass
+    
+    @classmethod
+    @ModelView.button
+    @Workflow.transition('cancel')
+    def draft(cls, resources):
+        pass
     
 class Period(ModelSQL, ModelView):
     "Period"
