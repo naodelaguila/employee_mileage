@@ -15,4 +15,6 @@
     <field name="description"/>
     <label name="state"/>
     <field name="state"/>
+    <label name="period"/>
+    <field name="period"/>
 </form>

@@ -5,14 +5,18 @@ class Mileage(ModelSQL, ModelView):
     "Employee Mileage"
     __name__ = 'employee.mileage'
     
-    employee = fields.Many2One('company.employee', 'Employee', required=True)
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
     distance = fields.Float('Distance', required=True)
     price_per_km = fields.Numeric('Price per km')
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
-    state = fields.Selection([('a', 'draft'), ('b', 'confirmed'), ('c', 'posted'), ('d', 'cancelled'),], 'State')
+    state = fields.Selection([
+        ('draft', 'draft'),
+        ('confirmed', 'confirmed'),
+        ('posted', 'posted'),
+        ('cancelled', 'cancelled'),], 'State')
+    period = fields.Many2One('employee.mileage.period', 'Period')
     
     # Resource functions -> Puede resultar en catástrofe
     @classmethod
@@ -37,4 +41,4 @@ class Period(ModelSQL, ModelView):
     
     name = fields.Char('Name', required=True)
     employee = fields.Many2One('company.employee', 'Employee', required=True)
-    mileage = fields.One2Many('employee.mileage', 'distance', 'Mileage', required=True)
+    mileage = fields.One2Many('employee.mileage', 'period', 'Mileage')
