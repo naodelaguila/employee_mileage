@@ -30,4 +30,10 @@ class Mileage(ModelSQL, ModelView):
             res.append((m.model, m.name))
         return res
     
+class Period(ModelSQL, ModelView):
+    "Period"
+    __name__ = 'employee.mileage.period'
     
+    name = fields.Char('Name', required=True)
+    employee = fields.Many2One('company.employee', 'Employee', required=True)
+    mileage = fields.One2Many('employee', 'mileage', 'Mileage', required=True)
