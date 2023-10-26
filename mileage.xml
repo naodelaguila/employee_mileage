@@ -90,5 +90,19 @@
             <field name="string">Cancel</field>
             <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
         </record>
+
+        <!-- FOR THE INHERITED MODULE -->
+        <record model="ir.ui.view" id="company_list">
+			<field name="name">company_list</field>
+			<field name="model">company.employee</field>
+			<field name="inherit" ref="company.employee_view_tree"/>
+		</record>
+
+		<record model="ir.ui.view" id="company_form">
+			<field name="name">company_form</field>
+			<field name="model">company.employee</field>
+			<field name="inherit" ref="company.employee_view_form"/>
+		</record>
+
     </data>
 </tryton>

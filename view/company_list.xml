@@ -1,0 +1,5 @@
+<data>  
+	<xpath expr="/tree/field[@name='supervisor']" position="after">
+        <field name="price_per_km"/>
+    </xpath>
+</data>

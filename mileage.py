@@ -1,6 +1,6 @@
 from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.pyson import Eval, Bool, Not
-from trytond.pool import Pool
+from trytond.pool import Pool, PoolMeta
 
 class Mileage(Workflow, ModelSQL, ModelView):
     "Employee Mileage"
@@ -99,3 +99,7 @@ class Period(Workflow, ModelSQL, ModelView):
     @Workflow.transition('cancelled')
     def cancel(cls, resources):
         pass
+    
+class CompanyExtend(metaclass = PoolMeta):
+    __name__ = 'company.employee'
+    price_per_km = fields.Char("Price per KM")

@@ -1,0 +1,6 @@
+<data>  
+	<xpath expr="/form/field[@name='supervisor']" position="after">
+        <label name="price_per_km"/> 
+        <field name="price_per_km"/>
+    </xpath>
+</data>
