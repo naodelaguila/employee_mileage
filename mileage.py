@@ -62,6 +62,7 @@ class Period(Workflow, ModelSQL, ModelView):
             ('draft', 'cancelled'),
             ('confirmed', 'posted'),
             ('confirmed', 'cancelled'),
+            ('cancelled', 'draft'),
             ))
         cls._buttons.update({
             'draft': {
