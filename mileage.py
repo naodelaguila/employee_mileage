@@ -1,4 +1,5 @@
 from trytond.model import ModelSQL, ModelView, fields, Workflow
+from trytond.transaction import Transaction
 from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool, PoolMeta
 
@@ -42,6 +43,11 @@ class Period(Workflow, ModelSQL, ModelView):
         ('confirmed', 'confirmed'),
         ('posted', 'posted'),
         ('cancelled', 'cancelled'),], 'State', readonly=True, required=True, sort=False)
+    
+    @staticmethod
+    def default_employee():
+        employee_id = Transaction().context.get('employee')
+        return employee_id
     
     @staticmethod
     def default_state():

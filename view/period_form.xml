@@ -3,8 +3,7 @@
     <field name="name"/>
     <label name="employee"/>
     <field name="employee"/>
-    <label name="mileage"/>
-    <field name="mileage"/>
+    <field name="mileage" colspan="4"/>
     <label name="state"/>
     <field name="state"/>
     <button name="draft" colspan="3"/>
