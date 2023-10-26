@@ -66,5 +66,29 @@
 
         <menuitem id="menu_period" parent="employee_mileage.menu_mileage" sequence="1" icon="tryton-list" action="act_period" />
 
+        <!-- BUTTONS -->
+        <record model="ir.model.button" id="btn_draft">
+            <field name="name">draft</field>
+            <field name="string">Draft</field>
+            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+        </record>
+
+        <record model="ir.model.button" id="btn_confirm">
+            <field name="name">confirm</field>
+            <field name="string">Confirm</field>
+            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+        </record>
+
+        <record model="ir.model.button" id="btn_post">
+            <field name="name">post</field>
+            <field name="string">Post</field>
+            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+        </record>
+
+        <record model="ir.model.button" id="btn_cancel">
+            <field name="name">cancel</field>
+            <field name="string">Cancel</field>
+            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+        </record>
     </data>
 </tryton>

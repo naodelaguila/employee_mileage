@@ -1,6 +1,4 @@
 <form >
-    <label name="employee"/>
-    <field name="employee"/>
     <label name="resource"/>
     <field name="resource"/>
     <label name="address"/>
@@ -11,8 +9,6 @@
     <field name="date"/>
     <label name="description"/>
     <field name="description"/>
-    <label name="state"/>
-    <field name="state"/>
     <label name="period"/>
     <field name="period"/>
 </form>

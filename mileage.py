@@ -1,7 +1,8 @@
 from trytond.model import ModelSQL, ModelView, fields, Workflow
+from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool
 
-class Mileage(ModelSQL, ModelView):
+class Mileage(Workflow, ModelSQL, ModelView):
     "Employee Mileage"
     __name__ = 'employee.mileage'
     
@@ -10,11 +11,6 @@ class Mileage(ModelSQL, ModelView):
     distance = fields.Float('Distance', required=True)
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
-    state = fields.Selection([
-        ('draft', 'draft'),
-        ('confirmed', 'confirmed'),
-        ('posted', 'posted'),
-        ('cancelled', 'cancelled'),], 'State')
     period = fields.Many2One('employee.mileage.period', 'Period')
     
     # Resource functions -> Puede resultar en catástrofe
@@ -34,34 +30,48 @@ class Mileage(ModelSQL, ModelView):
             res.append((m.model, m.name))
         return res
     
+class Period(Workflow, ModelSQL, ModelView):
+    "Period"
+    __name__ = 'employee.mileage.period'
+    
+    name = fields.Char('Name', required=True)
+    employee = fields.Many2One('company.employee', 'Employee', required=True)
+    mileage = fields.One2Many('employee.mileage', 'period', 'Mileage')
+    state = fields.Selection([
+        ('draft', 'draft'),
+        ('confirmed', 'confirmed'),
+        ('posted', 'posted'),
+        ('cancelled', 'cancelled'),], 'State', readonly=True, required=True, sort=False)
+    
+    @staticmethod
+    def default_state():
+        return 'draft'
+    
     # Workflow para el state
     @classmethod
     def __setup__(cls):
+        super().__setup__()
         cls._transitions |= set((
             ('draft', 'confirmed'),
-            ('confirmed', 'posted'),
             ('draft', 'cancelled'),
-            ('confirmed', 'cancelled')
-        ))
+            ('confirmed', 'posted'),
+            ('confirmed', 'cancelled'),
+            ))
         cls._buttons.update({
             'draft': {
-                'invisible': (),
-                'icon': (),
+                'invisible': ( (Eval('state') != 'cancelled') ),
                 'depends': ['state']
             },
             'confirm': {
-                'invisible': (),
-                'icon': (),
+                'invisible': ( (Eval('state') != 'draft') ),
                 'depends': ['state']
             },
-            'posted': {
-                'invisible': (),
-                'icon': (),
+            'post': {
+                'invisible': ( (Eval('state') != 'confirmed') ),
                 'depends': ['state']
             },
             'cancel': {
-                'invisible': (),
-                'icon': (),
+                'invisible': ( (Eval('state') != 'confirmed') & (Eval('state') != 'draft') ),
                 'depends': ['state']
             },
         })
@@ -74,26 +84,18 @@ class Mileage(ModelSQL, ModelView):
     
     @classmethod
     @ModelView.button
-    @Workflow.transition('confirm')
-    def draft(cls, resources):
+    @Workflow.transition('confirmed')
+    def confirm(cls, resources):
         pass
     
     @classmethod
     @ModelView.button
-    @Workflow.transition('post')
-    def draft(cls, resources):
+    @Workflow.transition('posted')
+    def post(cls, resources):
         pass
     
     @classmethod
     @ModelView.button
-    @Workflow.transition('cancel')
-    def draft(cls, resources):
+    @Workflow.transition('cancelled')
+    def cancel(cls, resources):
         pass
-    
-class Period(ModelSQL, ModelView):
-    "Period"
-    __name__ = 'employee.mileage.period'
-    
-    name = fields.Char('Name', required=True)
-    employee = fields.Many2One('company.employee', 'Employee', required=True)
-    mileage = fields.One2Many('employee.mileage', 'period', 'Mileage')

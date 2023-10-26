@@ -2,4 +2,5 @@
     <field name="name"/>
     <field name="employee"/>
     <field name="mileage"/>
+    <field name="state"/>
  </tree>

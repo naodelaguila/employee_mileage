@@ -5,4 +5,10 @@
     <field name="employee"/>
     <label name="mileage"/>
     <field name="mileage"/>
+    <label name="state"/>
+    <field name="state"/>
+    <button name="draft" colspan="3"/>
+    <button name="confirm" colspan="3"/>
+    <button name="post" colspan="3"/>
+    <button name="cancel" colspan="3"/>
 </form>

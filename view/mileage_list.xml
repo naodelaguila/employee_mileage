@@ -1,9 +1,8 @@
 <tree>
-    <field name="employee"/>
     <field name="resource"/>
     <field name="address"/>
     <field name="distance"/>
     <field name="date"/>
     <field name="description"/>
-    <field name="state"/>
+    <field name="period"/>
  </tree>
