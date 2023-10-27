@@ -2,10 +2,17 @@ from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.transaction import Transaction
 from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool, PoolMeta
+import datetime
 
+# CLASS MILEAGE
 class Mileage(Workflow, ModelSQL, ModelView):
     "Employee Mileage"
     __name__ = 'employee.mileage'
+    
+    
+    # //////////////
+    #   ATTRIBUTES
+    # //////////////
     
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
@@ -13,6 +20,10 @@ class Mileage(Workflow, ModelSQL, ModelView):
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
     period = fields.Many2One('employee.mileage.period', 'Period')
+    
+    @staticmethod
+    def default_date():
+        return datetime.date.today()
     
     # Resource functions -> Puede resultar en catástrofe
     @classmethod
@@ -31,6 +42,8 @@ class Mileage(Workflow, ModelSQL, ModelView):
             res.append((m.model, m.name))
         return res
     
+    
+# CLASS PERIOD
 class Period(Workflow, ModelSQL, ModelView):
     "Period"
     __name__ = 'employee.mileage.period'
@@ -39,10 +52,10 @@ class Period(Workflow, ModelSQL, ModelView):
     employee = fields.Many2One('company.employee', 'Employee', required=True)
     mileage = fields.One2Many('employee.mileage', 'period', 'Mileage')
     state = fields.Selection([
-        ('draft', 'draft'),
-        ('confirmed', 'confirmed'),
-        ('posted', 'posted'),
-        ('cancelled', 'cancelled'),], 'State', readonly=True, required=True, sort=False)
+        ('draft', 'DRAFT'),
+        ('confirmed', 'CONFIRMED'),
+        ('posted', 'POSTED'),
+        ('cancelled', 'CANCELLED'),], 'State', readonly=True, required=True, sort=False)
     
     @staticmethod
     def default_employee():
