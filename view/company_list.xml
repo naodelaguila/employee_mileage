@@ -1,8 +1,9 @@
 <data>  
 	<xpath expr="/tree/field[@name='supervisor']" position="after">
-        <separator id="milage" string="Milage" colspan="4"/>
-         <field name="price_per_km"/>
-         <field name="debit"/>
-         <field name="credit"/>
+
+        <field name="price_per_km"/>
+        <field name="debit"/>
+        <field name="credit"/>
+
     </xpath>
 </data>

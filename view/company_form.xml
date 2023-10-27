@@ -1,12 +1,13 @@
 <data>  
 	<xpath expr="/form/field[@name='supervisor']" position="after">
       
-        <separator id="milage" string="Milage" colspan="4"/>
-             <label name="price_per_km"/> 
-             <field name="price_per_km"/>
-             <label name="debit"/> 
-             <field name="debit"/>
-             <label name="creit"/> 
-             <field name="credit"/>
+        <label name="price_per_km"/> 
+        <field name="price_per_km"/>
+        <separator id="accountDisplay" string="Accounts" colspan="4"/>
+        <label name="debit"/> 
+        <field name="debit"/>
+        <label name="credit"/> 
+        <field name="credit"/>
+
     </xpath>
 </data>
