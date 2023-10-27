@@ -3,11 +3,13 @@
     <field name="name"/>
     <label name="employee"/>
     <field name="employee"/>
-    <field name="mileage" colspan="4"/>
+    <field name="mileage" colspan="4" height="300"/>
     <label name="state"/>
     <field name="state"/>
-    <button name="draft" colspan="3"/>
-    <button name="confirm" colspan="3"/>
-    <button name="post" colspan="3"/>
-    <button name="cancel" colspan="3"/>
+    <group id="buttons" colspan="2">
+        <button name="draft"/>
+        <button name="confirm"/>
+        <button name="post"/>
+        <button name="cancel"/>
+    </group>
 </form>

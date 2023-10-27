@@ -1,8 +1,8 @@
-<tree>
+<tree editable="1">
+    <field name="period"/>
+    <field name="date"/>
     <field name="resource"/>
     <field name="address"/>
-    <field name="distance"/>
-    <field name="date"/>
+    <field name="distance" sum="Distance"/>
     <field name="description"/>
-    <field name="period"/>
  </tree>
