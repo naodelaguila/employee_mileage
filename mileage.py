@@ -99,20 +99,46 @@ class Period(Workflow, ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     @Workflow.transition('draft')
-    def draft(cls, resources):
+    def draft(cls, periods):
         pass
     
     @classmethod
     @ModelView.button
     @Workflow.transition('confirmed')
-    def confirm(cls, resources):
+    def confirm(cls, periods):
         pass
     
     @classmethod
     @ModelView.button
     @Workflow.transition('posted')
-    def post(cls, resources):
-        pass
+    def post(cls, periods):
+        pool = Pool()
+        Move = pool.get('account.move')
+        Line = pool.get('account.move.line')
+        
+        for period in periods:
+            print(period.mileage)
+            
+            km = sum([m.distance for m in period.mileage])
+            amount = km * period.employee.price_per_km
+            
+            move = Move()
+            period = move.period
+            move.effective_date = period.effective_date
+            move.journal = period.joural
+            move.lines = period.lines
+            
+            line = Line()
+            line.account = period.employee.debit
+            line.debit = amount
+            line.move = move
+            
+            line.party = period.employee.party
+            line.account = period.employee.credit
+            line.credit = amount
+            
+        
+         
     
     @classmethod
     @ModelView.button
@@ -122,7 +148,7 @@ class Period(Workflow, ModelSQL, ModelView):
     
 class CompanyExtend(metaclass = PoolMeta):
     __name__ = 'company.employee'
-    price_per_km = fields.Char("Price per KM")
+    price_per_km = fields.Float("Price per KM")
     debit = fields.Many2One('account.account', 'Debit account')
     credit = fields.Many2One('account.account', 'Credit account')
    
