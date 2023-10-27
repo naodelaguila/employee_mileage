@@ -110,3 +110,6 @@ class Period(Workflow, ModelSQL, ModelView):
 class CompanyExtend(metaclass = PoolMeta):
     __name__ = 'company.employee'
     price_per_km = fields.Char("Price per KM")
+    debit = fields.Many2One('account.account', 'Debit account')
+    credit = fields.Many2One('account.account', 'Credit account')
+   
