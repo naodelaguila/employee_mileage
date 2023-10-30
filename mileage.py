@@ -117,25 +117,31 @@ class Period(Workflow, ModelSQL, ModelView):
         Line = pool.get('account.move.line')
         
         for period in periods:
-            print(period.mileage)
             
-            km = sum([m.distance for m in period.mileage])
-            amount = km * period.employee.price_per_km
-            
+            amount = sum([m.distance for m in period.mileage])
+            if not(period.employee.price_per_km is None):
+                amount *= float(period.employee.price_per_km)
+                     
+            # No preguntes, pero creamos un registro en 'account.move'       
             move = Move()
-            period = move.period
-            move.effective_date = period.effective_date
-            move.journal = period.joural
-            move.lines = period.lines
+            periodMove = pool.get('account.period')
+            journalMove = pool.get('account.journal')
             
+            move.date = period.create_date
+            move.company = period.employee.company
+            move.period = periodMove()
+            move.journal = journalMove()
+            
+            # Creamos un registro 'account.move.line' para 'account.move'
             line = Line()
             line.account = period.employee.debit
+            #line.account = period.employee.credit
             line.debit = amount
-            line.move = move
-            
-            line.party = period.employee.party
-            line.account = period.employee.credit
             line.credit = amount
+            line.party = period.employee.party
+            line.move = move
+        
+            move.lines = Line.search([('id', '=', line.id)])
             
         
          
