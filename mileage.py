@@ -19,7 +19,7 @@ class Mileage(Workflow, ModelSQL, ModelView):
     distance = fields.Float('Distance', required=True)
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
-    period = fields.Many2One('employee.mileage.period', 'Period')
+    period = fields.Many2One('employee.period', 'Period')
     
     @staticmethod
     def default_date():
@@ -46,7 +46,7 @@ class Mileage(Workflow, ModelSQL, ModelView):
 # CLASS PERIOD
 class Period(Workflow, ModelSQL, ModelView):
     "Period"
-    __name__ = 'employee.mileage.period'
+    __name__ = 'employee.period'
     
     name = fields.Char('Name', required=True)
     employee = fields.Many2One('company.employee', 'Employee', required=True)

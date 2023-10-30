@@ -32,24 +32,24 @@
             <field name="act_window" ref="act_mileage" />
         </record>
 
-        <menuitem id="menu_mileage" parent="company.menu_company" sequence="99" icon="tryton-list" action="act_mileage" />
+        <menuitem id="menu_mileage" parent="menu_period" sequence="1" icon="tryton-list" action="act_mileage" />
     
         <!-- VIEW FOR PERIOD -->
         <record model="ir.ui.view" id="period_form">
             <field name="name">period_form</field>
-            <field name="model">employee.mileage.period</field>
+            <field name="model">employee.period</field>
             <field name="type">form</field>
         </record>
 
         <record model="ir.ui.view" id="period_list">
             <field name="name">period_list</field>
-            <field name="model">employee.mileage.period</field>
+            <field name="model">employee.period</field>
             <field name="type">tree</field>
         </record>
 
         <record model="ir.action.act_window" id="act_period">
             <field name="name">Period</field>   <!-- Nombre que verá el usuario en pantalla -->
-            <field name="res_model">employee.mileage.period</field>
+            <field name="res_model">employee.period</field>
         </record>
 
         <record model="ir.action.act_window.view" id="act_period_form">
@@ -64,31 +64,31 @@
             <field name="act_window" ref="act_period" />
         </record>
 
-        <menuitem id="menu_period" parent="employee_mileage.menu_mileage" sequence="1" icon="tryton-list" action="act_period" />
+        <menuitem id="menu_period" parent="company.menu_company" sequence="1" icon="tryton-list" action="act_period" />
 
         <!-- BUTTONS -->
         <record model="ir.model.button" id="btn_draft">
             <field name="name">draft</field>
             <field name="string">Draft</field>
-            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+            <field name="model" search="[('model', '=', 'employee.period')]"/>
         </record>
 
         <record model="ir.model.button" id="btn_confirm">
             <field name="name">confirm</field>
             <field name="string">Confirm</field>
-            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+            <field name="model" search="[('model', '=', 'employee.period')]"/>
         </record>
 
         <record model="ir.model.button" id="btn_post">
             <field name="name">post</field>
             <field name="string">Post</field>
-            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+            <field name="model" search="[('model', '=', 'employee.period')]"/>
         </record>
 
         <record model="ir.model.button" id="btn_cancel">
             <field name="name">cancel</field>
             <field name="string">Cancel</field>
-            <field name="model" search="[('model', '=', 'employee.mileage.period')]"/>
+            <field name="model" search="[('model', '=', 'employee.period')]"/>
         </record>
 
         <!-- FOR THE INHERITED MODULE -->
