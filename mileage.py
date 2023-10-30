@@ -126,22 +126,33 @@ class Period(Workflow, ModelSQL, ModelView):
             move = Move()
             periodMove = pool.get('account.period')
             journalMove = pool.get('account.journal')
+            Date = pool.get('ir.date')
             
-            move.date = period.create_date
+            periodAccount = periodMove()
+            periodAccount.end_date = Date().today()
+            periodAccount.save()
+            
+            move.date = Date().today()
             move.company = period.employee.company
-            move.period = periodMove()
-            move.journal = journalMove()
+            move.period = periodAccount
+            move.journal = journalMove().save()
             
             # Creamos un registro 'account.move.line' para 'account.move'
-            line = Line()
-            line.account = period.employee.debit
-            #line.account = period.employee.credit
-            line.debit = amount
-            line.credit = amount
-            line.party = period.employee.party
-            line.move = move
+            lineDebit = Line()
+            lineDebit.account = period.employee.debit
+            lineDebit.debit = amount
+            lineDebit.party = period.employee.party
+            lineDebit.save()
+            
+            lineCredit = Line()
+            lineCredit.account = period.employee.credit
+            lineCredit.credit = amount
+            lineCredit.party = period.employee.party
+            lineCredit.save()
         
-            move.lines = Line.search([('id', '=', line.id)])
+            move.lines = [lineDebit, lineCredit]
+            move.save()
+
             
         
          
