@@ -123,39 +123,41 @@ class Period(Workflow, ModelSQL, ModelView):
                 amount *= float(period.employee.price_per_km)
                      
             # No preguntes, pero creamos un registro en 'account.move'       
-            move = Move()
-            periodMove = pool.get('account.period')
-            journalMove = pool.get('account.journal')
+            Journal = pool.get('account.journal')
+            PeriodAccount = pool.get('account.period')
             Date = pool.get('ir.date')
             
-            periodAccount = periodMove()
-            periodAccount.end_date = Date().today()
-            periodAccount.save()
-            
-            move.date = Date().today()
-            move.company = period.employee.company
-            move.period = periodAccount
-            move.journal = journalMove().save()
+            print("0: Comenzando")
             
             # Creamos un registro 'account.move.line' para 'account.move'
-            lineDebit = Line()
-            lineDebit.account = period.employee.debit
-            lineDebit.debit = amount
-            lineDebit.party = period.employee.party
-            lineDebit.save()
-            
-            lineCredit = Line()
-            lineCredit.account = period.employee.credit
-            lineCredit.credit = amount
-            lineCredit.party = period.employee.party
-            lineCredit.save()
+            line_debit = Line()
+            line_debit.account = period.employee.debit
+            line_debit.debit = amount
+            if line_debit.account.party_required:
+                line_debit.party = period.employee.party
         
-            move.lines = [lineDebit, lineCredit]
+            line_credit = Line()
+            line_credit.account = period.employee.credit
+            line_credit.credit = amount
+            if line_credit.account.party_required:
+                line_credit.party = period.employee.party
+           
+            print("1: Lines made")
+            
+            # Registro de move
+            journal = Journal.search(['id', '=', 1])
+            company_id = Transaction().context.get('company')
+            periodAccount = PeriodAccount.find(company_id, Date.today())
+            
+            move = Move()
+            move.company = period.employee.company
+            move.period = periodAccount
+            move.journal = journal[0]
+            move.date = Date().today()
+            move.lines = [line_debit, line_credit]            
+            print("2: Move made -> ", move.date)
+        
             move.save()
-
-            
-        
-         
     
     @classmethod
     @ModelView.button
@@ -165,7 +167,7 @@ class Period(Workflow, ModelSQL, ModelView):
     
 class CompanyExtend(metaclass = PoolMeta):
     __name__ = 'company.employee'
-    price_per_km = fields.Float("Price per KM")
-    debit = fields.Many2One('account.account', 'Debit account')
-    credit = fields.Many2One('account.account', 'Credit account')
+    price_per_km = fields.Float("Price per KM", required=True)
+    debit = fields.Many2One('account.account', 'Debit account', required=True)
+    credit = fields.Many2One('account.account', 'Credit account', required=True)
    
