@@ -140,7 +140,7 @@ class Period(Workflow, ModelSQL, ModelView):
             line_credit.account = period.employee.credit
             line_credit.credit = amount
             if line_credit.account.party_required:
-                line_credit.party = period.employee.party
+                    line_credit.party = period.employee.party
            
             print("1: Lines made")
             
@@ -149,10 +149,13 @@ class Period(Workflow, ModelSQL, ModelView):
             company_id = Transaction().context.get('company')
             periodAccount = PeriodAccount.find(company_id, Date.today())
             
+            Config = pool.get('account.configuration')
+            config = Config(1)
+            
             move = Move()
             move.company = period.employee.company
             move.period = periodAccount
-            move.journal = journal[0]
+            move.journal = journal[0] # En el futuro, reemplazar por -> config.employee_mileage_jornal
             move.date = Date().today()
             move.lines = [line_debit, line_credit]            
             print("2: Move made -> ", move.date)
@@ -170,4 +173,7 @@ class CompanyExtend(metaclass = PoolMeta):
     price_per_km = fields.Float("Price per KM", required=True)
     debit = fields.Many2One('account.account', 'Debit account', required=True)
     credit = fields.Many2One('account.account', 'Credit account', required=True)
-   
+    
+class MileContiguration():
+    __name__ = 'account.configuration.mileage'
+    employee_mileage_journal = fields.MultiValue(fields.Many2One('account.journal', 'Default Account Journal Mileage'))
