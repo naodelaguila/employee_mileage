@@ -174,6 +174,11 @@ class CompanyExtend(metaclass = PoolMeta):
     debit = fields.Many2One('account.account', 'Debit account', required=True)
     credit = fields.Many2One('account.account', 'Credit account', required=True)
     
-class MileContiguration():
-    __name__ = 'account.configuration.mileage'
+class AccountConfiguration(metaclass = PoolMeta):
+    __name__ = 'account.configuration'
     employee_mileage_journal = fields.MultiValue(fields.Many2One('account.journal', 'Default Account Journal Mileage'))
+
+#class MileageCompany(ModelSQL, CompanyValueMixin):
+    #""
+    #__name__ = "account.configuration.mileage"
+    
