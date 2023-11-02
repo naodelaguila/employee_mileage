@@ -5,6 +5,8 @@ def register():
     Pool.register(
         mileage.Mileage,
         mileage.Period,
-        mileage.CompanyExtend,
+        mileage.Employee,
+        mileage.AccountConfiguration,
+        mileage.MileageCompany,
         module='employee_mileage', type_='model'
     )

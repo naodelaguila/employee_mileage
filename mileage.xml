@@ -108,7 +108,7 @@
         <record model="ir.ui.view" id="configuration_form">
 			<field name="name">config_form</field>
 			<field name="model">account.configuration</field>
-			<field name="inherit" ref="account.configuration.configuration_view_form"/>
+			<field name="inherit" ref="account.configuration_view_form"/>
 		</record>
 
     </data>

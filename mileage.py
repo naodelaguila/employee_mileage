@@ -2,6 +2,8 @@ from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.transaction import Transaction
 from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool, PoolMeta
+from trytond.modules.company.model import (
+    CompanyMultiValueMixin, CompanyValueMixin)
 import datetime
 
 # CLASS MILEAGE
@@ -109,6 +111,15 @@ class Period(Workflow, ModelSQL, ModelView):
         pass
     
     @classmethod
+    def copy(cls, periods, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('state', 'draft')
+        super().copy(periods, default=default)
+    
+    @classmethod
     @ModelView.button
     @Workflow.transition('posted')
     def post(cls, periods):
@@ -145,7 +156,6 @@ class Period(Workflow, ModelSQL, ModelView):
             print("1: Lines made")
             
             # Registro de move
-            journal = Journal.search(['id', '=', 1])
             company_id = Transaction().context.get('company')
             periodAccount = PeriodAccount.find(company_id, Date.today())
             
@@ -155,7 +165,7 @@ class Period(Workflow, ModelSQL, ModelView):
             move = Move()
             move.company = period.employee.company
             move.period = periodAccount
-            move.journal = journal[0] # En el futuro, reemplazar por -> config.employee_mileage_jornal
+            move.journal = config.employee_mileage_jornal
             move.date = Date().today()
             move.lines = [line_debit, line_credit]            
             print("2: Move made -> ", move.date)
@@ -168,7 +178,7 @@ class Period(Workflow, ModelSQL, ModelView):
     def cancel(cls, resources):
         pass
     
-class CompanyExtend(metaclass = PoolMeta):
+class Employee(metaclass = PoolMeta):
     __name__ = 'company.employee'
     price_per_km = fields.Float("Price per KM", required=True)
     debit = fields.Many2One('account.account', 'Debit account', required=True)
@@ -178,7 +188,16 @@ class AccountConfiguration(metaclass = PoolMeta):
     __name__ = 'account.configuration'
     employee_mileage_journal = fields.MultiValue(fields.Many2One('account.journal', 'Default Account Journal Mileage'))
 
-#class MileageCompany(ModelSQL, CompanyValueMixin):
-    #""
-    #__name__ = "account.configuration.mileage"
+    @classmethod
+    def multivalue_model(cls, field):
+        pool = Pool()
+        if field in {'employee_mileage_journal'}:
+            return pool.get('account.configuration.mileage')
+        return super().multivalue_model(field)
+
+
+class MileageCompany(ModelSQL, CompanyValueMixin):
+    "Account Configuration Mileage"
+    __name__ = "account.configuration.mileage"
+    employee_mileage_journal = fields.Many2One('account.journal', 'Default Account Journal Mileage')
     
