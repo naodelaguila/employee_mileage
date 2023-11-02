@@ -172,7 +172,7 @@ class Period(Workflow, ModelSQL, ModelView):
             move = Move()
             move.company = period.employee.company
             move.period = periodAccount
-            move.journal = config.employee_mileage_jornal
+            move.journal = config.employee_mileage_journal
             move.date = Date().today()
             move.lines = [line_debit, line_credit]            
            
@@ -181,7 +181,6 @@ class Period(Workflow, ModelSQL, ModelView):
         
             move.save()
             period.move = move
-             
             print("se ha guardo algo")
     
     @classmethod
