@@ -57,7 +57,7 @@ class Period(Workflow, ModelSQL, ModelView):
         ('cancelled', 'CANCELLED'),], 'State', readonly=True, required=True, sort=False)
    
    #Lo de creear el move en el period   
-    move = fields.Many2One('account.move', 'Account Move')
+    move = fields.Many2One('account.move', 'Account Move', readonly=True)
 
     @staticmethod
     def default_employee():
@@ -77,6 +77,7 @@ class Period(Workflow, ModelSQL, ModelView):
             ('draft', 'cancelled'),
             ('confirmed', 'posted'),
             ('confirmed', 'cancelled'),
+            ('posted', 'cancelled'),
             ('cancelled', 'draft'),
             ))
         cls._buttons.update({
@@ -93,7 +94,7 @@ class Period(Workflow, ModelSQL, ModelView):
                 'depends': ['state']
             },
             'cancel': {
-                'invisible': ( (Eval('state') != 'confirmed') & (Eval('state') != 'draft') ),
+                'invisible': ( (Eval('state') != 'confirmed') & (Eval('state') != 'draft') & (Eval('state') != 'posted') ),
                 'depends': ['state']
             },
         })
@@ -134,8 +135,7 @@ class Period(Workflow, ModelSQL, ModelView):
             if not(period.employee.price_per_km is None):
                 amount *= float(period.employee.price_per_km)
                      
-            # No preguntes, pero creamos un registro en 'account.move'       
-            Journal = pool.get('account.journal')
+            # No preguntes, pero creamos un registro en 'account.move'
             PeriodAccount = pool.get('account.period')
             Date = pool.get('ir.date')
             
@@ -181,13 +181,62 @@ class Period(Workflow, ModelSQL, ModelView):
         
             move.save()
             period.move = move
+            period.save()
             print("se ha guardo algo")
     
     @classmethod
     @ModelView.button
     @Workflow.transition('cancelled')
-    def cancel(cls, resources):
-        pass
+    def cancel(cls, periods):
+        pool = Pool()
+        Move = pool.get('account.move')
+        Line = pool.get('account.move.line')
+        
+        for period in periods:
+            amount = sum([m.distance for m in period.mileage])
+            if not(period.employee.price_per_km is None):
+                amount *= float(period.employee.price_per_km)
+                     
+            # No preguntes, pero creamos un registro en 'account.move'
+            PeriodAccount = pool.get('account.period')
+            Date = pool.get('ir.date')
+            
+            # Creamos un registro 'account.move.line' para 'account.move'
+            line_debit = Line()
+            line_debit.account = period.employee.debit
+            line_debit.credit = amount
+            if line_debit.account.party_required:
+                line_debit.party = period.employee.party
+            
+            
+            #Actualización del employee.party.account.payable_used 
+            #en lugar del --> credit = fields.Many2One('account.account', 'Credit account', required=True)
+
+            line_credit=Line()
+            line_credit.account = period.employee.party.account_payable_used
+            line_credit.debit = amount
+            if line_credit.account.party_required:
+                line_credit.party = period.employee.party
+            
+
+            # Registro de move
+            company_id = Transaction().context.get('company')
+            periodAccount = PeriodAccount.find(company_id, Date.today())
+            
+            Config = pool.get('account.configuration')
+            config = Config(1)
+            
+            move = Move()
+            move.company = period.employee.company
+            move.period = periodAccount
+            move.journal = config.employee_mileage_journal
+            move.date = Date().today()
+            move.lines = [line_debit, line_credit]            
+        
+            move.save()
+            period.move = move
+            period.save()
+            
     
 class Employee(metaclass = PoolMeta):
     __name__ = 'company.employee'

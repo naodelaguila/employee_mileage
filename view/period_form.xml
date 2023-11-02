@@ -12,4 +12,6 @@
         <button name="post"/>
         <button name="cancel"/>
     </group>
+    <label name="move"/>
+    <field name="move" colspan="3"/>
 </form>
