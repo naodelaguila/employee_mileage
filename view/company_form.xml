@@ -6,8 +6,8 @@
         <field name="price_per_km"/>
         <label name="debit"/> 
         <field name="debit"/>
-        <label name="credit"/> 
-        <field name="credit"/>
+       <!-- <label name="credit"/> 
+        <field name="credit"/>-->
 
     </xpath>
 </data>

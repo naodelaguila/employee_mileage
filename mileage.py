@@ -10,12 +10,9 @@ import datetime
 class Mileage(Workflow, ModelSQL, ModelView):
     "Employee Mileage"
     __name__ = 'employee.mileage'
-    
-    
     # //////////////
     #   ATTRIBUTES
-    # //////////////
-    
+    # //////////////  
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
     distance = fields.Float('Distance', required=True)
@@ -58,7 +55,10 @@ class Period(Workflow, ModelSQL, ModelView):
         ('confirmed', 'CONFIRMED'),
         ('posted', 'POSTED'),
         ('cancelled', 'CANCELLED'),], 'State', readonly=True, required=True, sort=False)
-    
+   
+   #Lo de creear el move en el period   
+    move = fields.Many2One('account.move', 'Account Move')
+
     @staticmethod
     def default_employee():
         employee_id = Transaction().context.get('employee')
@@ -122,6 +122,7 @@ class Period(Workflow, ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     @Workflow.transition('posted')
+  
     def post(cls, periods):
         pool = Pool()
         Move = pool.get('account.move')
@@ -146,15 +147,21 @@ class Period(Workflow, ModelSQL, ModelView):
             line_debit.debit = amount
             if line_debit.account.party_required:
                 line_debit.party = period.employee.party
-        
-            line_credit = Line()
-            line_credit.account = period.employee.credit
-            line_credit.credit = amount
+            
+            
+            #Actualización del employee.party.account.payable_used 
+            #en lugar del --> credit = fields.Many2One('account.account', 'Credit account', required=True)
+
+            line_credit=Line()
+            line_credit.account = period.employee.party.account_payable_used
+            line_credit.credit= amount
             if line_credit.account.party_required:
-                    line_credit.party = period.employee.party
+                line_credit.party = period.employee.party
+
            
             print("1: Lines made")
             
+
             # Registro de move
             company_id = Transaction().context.get('company')
             periodAccount = PeriodAccount.find(company_id, Date.today())
@@ -168,9 +175,14 @@ class Period(Workflow, ModelSQL, ModelView):
             move.journal = config.employee_mileage_jornal
             move.date = Date().today()
             move.lines = [line_debit, line_credit]            
+           
+           
             print("2: Move made -> ", move.date)
         
             move.save()
+            period.move = move
+             
+            print("se ha guardo algo")
     
     @classmethod
     @ModelView.button
@@ -182,7 +194,8 @@ class Employee(metaclass = PoolMeta):
     __name__ = 'company.employee'
     price_per_km = fields.Float("Price per KM", required=True)
     debit = fields.Many2One('account.account', 'Debit account', required=True)
-    credit = fields.Many2One('account.account', 'Credit account', required=True)
+ #  credit = fields.Many2One('account.account', 'Credit account', required=True)
+ # COSA Q SE TIENE QUE VER
     
 class AccountConfiguration(metaclass = PoolMeta):
     __name__ = 'account.configuration'
