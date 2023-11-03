@@ -147,8 +147,8 @@ class Period(Workflow, ModelSQL, ModelView):
             # Creamos un registro 'account.move.line' para 'account.move'
             line_debit = Line()
             
-            if line_debit is None:
-                raise UserError(gettext('employee_mileage.msg_debit_none', name='{employee}'))
+            if period.employee.debit_account is None:
+                raise UserError(gettext('employee_mileage.msg_debit_none'))
                 
             line_debit.account = period.employee.debit_account
             
