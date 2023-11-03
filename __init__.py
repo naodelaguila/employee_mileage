@@ -8,5 +8,6 @@ def register():
         mileage.Employee,
         mileage.AccountConfiguration,
         mileage.MileageCompany,
+        mileage.AccountMove,
         module='employee_mileage', type_='model'
     )

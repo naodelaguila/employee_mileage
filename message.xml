@@ -2,7 +2,13 @@
     <data>
 
         <record model='ir.message' id='msg_debit_none'>
-            <field name='text'>%(name)s don't have a debit account!</field>
+            <field name='text'>Employee "%(name)s" don't have a debit account! 
+                Error: Empty value. 
+                Ref: 'Companies/Employees/%(name)s/Debit account'</field>
+        </record>
+
+        <record model='ir.message' id='msg_credit_none'>
+            <field name='text'>Employee "%(name)s" don't have a credit account!</field>
         </record>
 
     </data>
