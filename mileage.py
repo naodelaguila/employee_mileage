@@ -7,7 +7,7 @@ from trytond.modules.company.model import (
 import datetime
 
 # CLASS MILEAGE
-class Mileage(Workflow, ModelSQL, ModelView):
+class Mileage(ModelSQL, ModelView):
     "Employee Mileage"
     __name__ = 'employee.mileage'
     # //////////////
