@@ -123,21 +123,22 @@ class Period(Workflow, ModelSQL, ModelView):
     @classmethod
     @ModelView.button
     @Workflow.transition('posted')
-  
     def post(cls, periods):
         pool = Pool()
         Move = pool.get('account.move')
         Line = pool.get('account.move.line')
-        
+        PeriodAccount = pool.get('account.period')
+        Date = pool.get('ir.date')
+        Config = pool.get('account.configuration')
+
+        config = Config(1)
+
         for period in periods:
-            
             amount = sum([m.distance for m in period.mileage])
             if not(period.employee.price_per_km is None):
                 amount *= float(period.employee.price_per_km)
                      
             # No preguntes, pero creamos un registro en 'account.move'
-            PeriodAccount = pool.get('account.period')
-            Date = pool.get('ir.date')
             
             print("0: Comenzando")
             
@@ -152,7 +153,7 @@ class Period(Workflow, ModelSQL, ModelView):
             #Actualización del employee.party.account.payable_used 
             #en lugar del --> credit = fields.Many2One('account.account', 'Credit account', required=True)
 
-            line_credit=Line()
+            line_credit = Line()
             line_credit.account = period.employee.party.account_payable_used
             line_credit.credit= amount
             if line_credit.account.party_required:
@@ -166,14 +167,13 @@ class Period(Workflow, ModelSQL, ModelView):
             company_id = Transaction().context.get('company')
             periodAccount = PeriodAccount.find(company_id, Date.today())
             
-            Config = pool.get('account.configuration')
-            config = Config(1)
             
             move = Move()
             move.company = period.employee.company
             move.period = periodAccount
             move.journal = config.employee_mileage_journal
             move.date = Date().today()
+            move.origin = self
             move.lines = [line_debit, line_credit]            
            
            
@@ -188,62 +188,20 @@ class Period(Workflow, ModelSQL, ModelView):
     @ModelView.button
     @Workflow.transition('cancelled')
     def cancel(cls, periods):
-        pool = Pool()
-        Move = pool.get('account.move')
-        Line = pool.get('account.move.line')
-        
         for period in periods:
-            amount = sum([m.distance for m in period.mileage])
-            if not(period.employee.price_per_km is None):
-                amount *= float(period.employee.price_per_km)
-                     
-            # No preguntes, pero creamos un registro en 'account.move'
-            PeriodAccount = pool.get('account.period')
-            Date = pool.get('ir.date')
-            
-            # Creamos un registro 'account.move.line' para 'account.move'
-            line_debit = Line()
-            line_debit.account = period.employee.debit
-            line_debit.credit = amount
-            if line_debit.account.party_required:
-                line_debit.party = period.employee.party
-            
-            
-            #Actualización del employee.party.account.payable_used 
-            #en lugar del --> credit = fields.Many2One('account.account', 'Credit account', required=True)
-
-            line_credit=Line()
-            line_credit.account = period.employee.party.account_payable_used
-            line_credit.debit = amount
-            if line_credit.account.party_required:
-                line_credit.party = period.employee.party
-            
-
-            # Registro de move
-            company_id = Transaction().context.get('company')
-            periodAccount = PeriodAccount.find(company_id, Date.today())
-            
-            Config = pool.get('account.configuration')
-            config = Config(1)
-            
-            move = Move()
-            move.company = period.employee.company
-            move.period = periodAccount
-            move.journal = config.employee_mileage_journal
-            move.date = Date().today()
-            move.lines = [line_debit, line_credit]            
-        
-            move.save()
-            period.move = move
-            period.save()
+            if not period.move:
+                continue
+            period.move = period.move.cancel()
+        cls.save(periods)
             
     
 class Employee(metaclass = PoolMeta):
     __name__ = 'company.employee'
     price_per_km = fields.Float("Price per KM", required=True)
-    debit = fields.Many2One('account.account', 'Debit account', required=True)
+    debit_account = fields.Many2One('account.account', 'Debit account', required=True)
  #  credit = fields.Many2One('account.account', 'Credit account', required=True)
  # COSA Q SE TIENE QUE VER
+ 
     
 class AccountConfiguration(metaclass = PoolMeta):
     __name__ = 'account.configuration'
