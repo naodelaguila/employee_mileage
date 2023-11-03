@@ -260,5 +260,4 @@ class AccountConfiguration(metaclass = PoolMeta):
 class MileageCompany(ModelSQL, CompanyValueMixin):
     "Account Configuration Mileage"
     __name__ = "account.configuration.mileage"
-    employee_mileage_journal = fields.Many2One('account.journal', 'Default Account Journal Mileage')
-    
+    employee_mileage_journal = fields.Many2One('account.journal', 'Default Account Journal Mileage', context={'company': Eval('company', -1)})
