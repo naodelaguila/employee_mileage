@@ -1,0 +1,9 @@
+<tryton>
+    <data>
+
+        <record model='ir.message' id='msg_debit_none'>
+            <field name='text'>%(name)s don't have a debit account!</field>
+        </record>
+
+    </data>
+</tryton>

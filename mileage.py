@@ -4,6 +4,8 @@ from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool, PoolMeta
 from trytond.modules.company.model import (
     CompanyMultiValueMixin, CompanyValueMixin)
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 import datetime
 
 # CLASS MILEAGE
@@ -144,7 +146,12 @@ class Period(Workflow, ModelSQL, ModelView):
             
             # Creamos un registro 'account.move.line' para 'account.move'
             line_debit = Line()
-            line_debit.account = period.employee.debit
+            
+            if line_debit is None:
+                raise UserError(gettext('employee_mileage.msg_debit_none', name='{employee}'))
+                
+            line_debit.account = period.employee.debit_account
+            
             line_debit.debit = amount
             if line_debit.account.party_required:
                 line_debit.party = period.employee.party
