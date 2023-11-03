@@ -4,8 +4,8 @@
         <separator id="mileage" string="Mileage" colspan="4"/>
         <label name="price_per_km"/> 
         <field name="price_per_km"/>
-        <label name="debit"/> 
-        <field name="debit"/>
+        <label name="debit_account"/> 
+        <field name="debit_account"/>
        <!-- <label name="credit"/> 
         <field name="credit"/>-->
 
