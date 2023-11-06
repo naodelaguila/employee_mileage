@@ -25,12 +25,14 @@ Create fiscal year::
 
     >>> fiscalyear = create_fiscalyear(company)
     >>> fiscalyear.click('create_period')
-    >>> period_ids = [p.id for p in fiscalyear.periods]
+    >>> periods = fiscalyear.periods
+    >>> period_1, period_3, period_5 = periods[0], periods[2], periods[4]
 
 Create chart of accounts::
 
     >>> _ = create_chart(company)
     >>> accounts = get_accounts(company)
+    >>> receivable = accounts['receivable']
     >>> payable = accounts['payable']
     >>> expense = accounts['expense']
     >>> tax = accounts['tax']
@@ -40,3 +42,40 @@ Create parties::
     >>> Party = Model.get('party.party')
     >>> supplier = Party(name='Supplier')
     >>> supplier.save()
+
+
+Create a moves::
+
+    >>> Journal = Model.get('account.journal')
+    >>> Move = Model.get('account.move')
+    >>> journal_revenue, = Journal.find([
+    ...         ('code', '=', 'REV'),
+    ...         ])
+    >>> journal_cash, = Journal.find([
+    ...         ('code', '=', 'CASH'),
+    ...         ])
+    >>> move = Move()
+    >>> move.period = period_3
+    >>> move.journal = journal_revenue
+    >>> move.date = period_3.start_date
+    >>> line = move.lines.new()
+    >>> line.account = child_revenue
+    >>> line.credit = Decimal(10)
+    >>> line = move.lines.new()
+    >>> line.account = receivable
+    >>> line.debit = Decimal(10)
+    >>> line.party = party
+    >>> move.save()
+
+    >>> move = Move()
+    >>> move.period = period_5
+    >>> move.journal = journal_cash
+    >>> move.date = period_5.start_date
+    >>> line = move.lines.new()
+    >>> line.account = cash
+    >>> line.debit = Decimal(10)
+    >>> line = move.lines.new()
+    >>> line.account = receivable
+    >>> line.credit = Decimal(10)
+    >>> line.party = party
+    >>> move.save()
