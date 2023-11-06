@@ -73,4 +73,4 @@ Buttons::
     >>> period.click('confirm')
     >>> period.click('post')
 
-    
+        

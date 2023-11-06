@@ -173,7 +173,7 @@ class Period(Workflow, ModelSQL, ModelView):
             move.period = periodAccount
             move.journal = config.employee_mileage_journal
             move.date = Date().today()
-            move.origin = period.mileage
+            move.origin = period
             move.lines = [line_debit, line_credit]            
             # move.save()
             
@@ -197,13 +197,13 @@ class Employee(metaclass = PoolMeta):
     debit_account = fields.Many2One('account.account', 'Debit account', required=True)
 
 
-class AccountMove(metaclass = PoolMeta):
+class Move(metaclass = PoolMeta):
     __name__ = 'account.move'
     
     @classmethod
     def _get_origin(cls):
         'Return of Model names for origin References'
-        return ['employee.mileage'] 
+        return (super(Move, cls)._get_origin() + ['employee.period'])
  
     
 class AccountConfiguration(metaclass = PoolMeta):
