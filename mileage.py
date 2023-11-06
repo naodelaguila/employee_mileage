@@ -173,7 +173,7 @@ class Period(Workflow, ModelSQL, ModelView):
             move.period = periodAccount
             move.journal = config.employee_mileage_journal
             move.date = Date().today()
-            move.origin = cls
+            move.origin = period.mileage
             move.lines = [line_debit, line_credit]            
             # move.save()
             
