@@ -1,16 +1,16 @@
 ======================
-MIleage Scenario
+Mileage Scenario
 ======================
 
 Imports::
 
-    >>> from decimal import Decimal
     >>> from proteus import Model, Wizard
     >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
     ...     create_chart, get_accounts, create_tax, create_tax_code
+    >>> import datetime
 
 Activate modules::
 
@@ -43,39 +43,34 @@ Create parties::
     >>> supplier = Party(name='Supplier')
     >>> supplier.save()
 
+Create Employees::
 
-Create a moves::
+    >>> Employee = Model.get('company.employee')
+    >>> Party = Model.get('party.party')
+    >>> employee_party = Party(name='Employee')
+    >>> employee_party.save()
+    >>> employee1 = Employee()
+    >>> employee1.company = company
+    >>> employee1.price_per_km = 7.7
+    >>> employee1.debit_account = payable
+    >>> employee1.party = employee_party
+    >>> employee1.save()
 
-    >>> Journal = Model.get('account.journal')
-    >>> Move = Model.get('account.move')
-    >>> journal_revenue, = Journal.find([
-    ...         ('code', '=', 'REV'),
-    ...         ])
-    >>> journal_cash, = Journal.find([
-    ...         ('code', '=', 'CASH'),
-    ...         ])
-    >>> move = Move()
-    >>> move.period = period_3
-    >>> move.journal = journal_revenue
-    >>> move.date = period_3.start_date
-    >>> line = move.lines.new()
-    >>> line.account = child_revenue
-    >>> line.credit = Decimal(10)
-    >>> line = move.lines.new()
-    >>> line.account = receivable
-    >>> line.debit = Decimal(10)
-    >>> line.party = party
-    >>> move.save()
+Create Mileage_Period::
+    >>> Period = Model.get('employee.period')
+    >>> period = Period()
+    >>> period.name = 'holaName'
+    >>> period.employee = employee1
+    >>> mileage = period.mileage.new()
+    >>> mileage.distance = 4.8
+    >>> mileage.address = supplier
+    >>> mileage.date = datetime.date.today()
+    >>> mileage.period = period
+    >>> period.save()
 
-    >>> move = Move()
-    >>> move.period = period_5
-    >>> move.journal = journal_cash
-    >>> move.date = period_5.start_date
-    >>> line = move.lines.new()
-    >>> line.account = cash
-    >>> line.debit = Decimal(10)
-    >>> line = move.lines.new()
-    >>> line.account = receivable
-    >>> line.credit = Decimal(10)
-    >>> line.party = party
-    >>> move.save()
+Buttons::
+
+    >>> period.click('confirm')
+    >>> period.click('post')
+
+    
