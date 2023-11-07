@@ -2,10 +2,12 @@ from trytond.model import ModelSQL, ModelView, fields, Workflow
 from trytond.transaction import Transaction
 from trytond.pyson import Eval, Bool, Not
 from trytond.pool import Pool, PoolMeta
+from trytond.modules.currency.fields import Monetary
 from trytond.modules.company.model import (
     CompanyMultiValueMixin, CompanyValueMixin)
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from trytond.modules.product import price_digits
 import datetime
 
 # CLASS MILEAGE
@@ -17,7 +19,7 @@ class Mileage(ModelSQL, ModelView):
     # //////////////  
     resource = fields.Reference('Resource', selection='get_resource')
     address = fields.Many2One('party.address', 'Address', required=True)
-    distance = fields.Float('Distance', required=True)
+    distance = fields.Integer('Distance', required=True)
     date = fields.Date('Date', required=True)
     description = fields.Char('Description')
     period = fields.Many2One('employee.period', 'Period')
@@ -137,9 +139,11 @@ class Period(Workflow, ModelSQL, ModelView):
         for period in periods:
             
             # Calculamos la distancia a pagar
+            if period.employee.price_per_km is None:       # Revisamos que el campo indicado no sea nulo
+                raise UserError(gettext('employee_mileage.msg_no_price_per_km', name=period.employee.party.name))
             amount = sum([m.distance for m in period.mileage])
-            if not(period.employee.price_per_km is None):       # Revisamos que el campo indicado no sea nulo
-                amount *= float(period.employee.price_per_km)
+            amount *= period.employee.price_per_km
+            amount = round(amount, 2)
             
             # Creamos los lines para el move
             line_debit = Line()     # Para el débito
@@ -193,10 +197,23 @@ class Period(Workflow, ModelSQL, ModelView):
     
 class Employee(metaclass = PoolMeta):
     __name__ = 'company.employee'
-    price_per_km = fields.Float("Price per KM", required=True)
+    price_per_km = Monetary("Price per KM", required=True,
+        digits=price_digits, currency='currency')
     debit_account = fields.Many2One('account.account', 'Debit account', required=True)
-
-
+    currency = fields.Function(fields.Many2One('currency.currency', 'Currency'), 'get_currency')
+    
+    @classmethod
+    def get_currency(cls, journals, name):
+        pool = Pool()
+        Company = pool.get('company.company')
+        company_id = Transaction().context.get('company')
+        if company_id:
+            company = Company(company_id)
+            currency_id = company.currency.id
+        else:
+            currency_id = None
+        return dict.fromkeys([j.id for j in journals], currency_id)
+    
 class Move(metaclass = PoolMeta):
     __name__ = 'account.move'
     

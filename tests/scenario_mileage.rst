@@ -4,6 +4,7 @@ Mileage Scenario
 
 Imports::
 
+    >>> from decimal import Decimal
     >>> from proteus import Model, Wizard
     >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
@@ -15,6 +16,8 @@ Imports::
 Activate modules::
 
     >>> config = activate_modules('employee_mileage')
+    >>> Configuration = Model.get('account.configuration')
+    >>> Journal = Model.get('account.journal')
 
 Create company::
 
@@ -43,6 +46,21 @@ Create parties::
     >>> supplier = Party(name='Supplier')
     >>> supplier.save()
 
+Create journal ::
+
+    >>> Journal = Model.get('account.journal')
+    >>> journal = Journal()
+    >>> journal.name = 'Journal example'
+    >>> journal.type = 'general'
+    >>> journal.save()
+
+Create configuration::
+
+    >>> Configuration = Model.get('account.configuration')
+    >>> configuration = Configuration()
+    >>> configuration.employee_mileage_journal = journal
+    >>> configuration.save()
+
 Create Employees::
 
     >>> Employee = Model.get('company.employee')
@@ -51,7 +69,7 @@ Create Employees::
     >>> employee_party.save()
     >>> employee1 = Employee()
     >>> employee1.company = company
-    >>> employee1.price_per_km = 7.7
+    >>> employee1.price_per_km = Decimal('6.8785')
     >>> employee1.debit_account = payable
     >>> employee1.party = employee_party
     >>> employee1.save()
@@ -62,15 +80,29 @@ Create Mileage_Period::
     >>> period.name = 'holaName'
     >>> period.employee = employee1
     >>> mileage = period.mileage.new()
-    >>> mileage.distance = 4.8
+    >>> mileage.distance = 4
     >>> mileage.address = supplier
     >>> mileage.date = datetime.date.today()
     >>> mileage.period = period
     >>> period.save()
+   
 
 Buttons::
 
     >>> period.click('confirm')
     >>> period.click('post')
 
-        
+Check move::
+
+    >>> period.move != None
+    True
+    >>> period.move.origin == period
+    True
+    >>> period.move.lines[0].credit
+    Decimal('27.51')
+    >>> period.move.lines[0].debit
+    Decimal('0')
+    >>> period.move.lines[1].debit
+    Decimal('27.51')
+    >>> period.move.lines[1].credit
+    Decimal('0')
