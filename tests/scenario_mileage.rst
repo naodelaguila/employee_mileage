@@ -98,11 +98,12 @@ Check move::
     True
     >>> period.move.origin == period
     True
-    >>> period.move.lines[0].credit
+    >>> lines = sorted(period.move.lines, key=lambda x: x.debit)
+    >>> lines[0].credit
     Decimal('27.51')
-    >>> period.move.lines[0].debit
+    >>> lines[0].debit
     Decimal('0')
-    >>> period.move.lines[1].debit
+    >>> lines[1].debit
     Decimal('27.51')
-    >>> period.move.lines[1].credit
+    >>> lines[1].credit
     Decimal('0')
